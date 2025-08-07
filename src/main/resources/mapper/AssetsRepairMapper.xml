@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.AssetsRepairMapper">
+
+    <sql id="Base_Column_List">
+        id,receive_id,status,reason,date,staff_id
+    </sql>
+
+    <select id="selectAll" resultType="com.example.entity.AssetsRepair">
+        select
+        assets_repair.*, assets.name as assetsName, staff.name as staffName
+        from assets_repair
+        left join assets_receive on assets_repair.receive_id = assets_receive.id
+        left join assets on assets_receive.assets_id = assets.id
+        left join staff on assets_repair.staff_id = staff.id
+        <where>
+            <if test="assetsName != null"> and assets.name like concat('%', #{assetsName}, '%')</if>
+            <if test="staffId != null"> and assets_repair.staff_id = #{staffId}</if>
+        </where>
+        order by assets_repair.id desc
+    </select>
+
+    <select id="selectById" resultType="com.example.entity.AssetsRepair">
+        select
+        <include refid="Base_Column_List" />
+        from assets_repair
+        where id = #{id}
+    </select>
+
+    <delete id="deleteById">
+        delete from assets_repair
+        where  id = #{id}
+    </delete>
+
+    <insert id="insert" parameterType="com.example.entity.AssetsRepair" useGeneratedKeys="true" keyProperty="id">
+        insert into assets_repair
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="receiveId != null">receive_id,</if>
+            <if test="status != null">status,</if>
+            <if test="reason != null">reason,</if>
+            <if test="date != null">date,</if>
+            <if test="staffId != null">staff_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="receiveId != null">#{receiveId},</if>
+            <if test="status != null">#{status},</if>
+            <if test="reason != null">#{reason},</if>
+            <if test="date != null">#{date},</if>
+            <if test="staffId != null">#{staffId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="com.example.entity.AssetsRepair">
+        update assets_repair
+        <set>
+            <if test="receiveId != null">
+                receive_id = #{receiveId},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="reason != null">
+                reason = #{reason},
+            </if>
+            <if test="date != null">
+                date = #{date},
+            </if>
+            <if test="staffId != null">
+                staff_id = #{staffId},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+</mapper>
