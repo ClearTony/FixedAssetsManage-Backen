@@ -8,7 +8,7 @@
         id,name,category,no,img,model,num,date,money,depreciate,department_id,staff_id,location,status,comment
     </sql>
 
-    <select id="selectAll" resultType="com.example.entity.Assets">
+    <select id="selectAll" resultType="com.example.dto.AssetsDto">
          select
          assets .*,department.name as departmentName, staff.name as staffName
          from assets 

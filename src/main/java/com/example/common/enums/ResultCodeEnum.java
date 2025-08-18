@@ -15,7 +15,7 @@ public enum ResultCodeEnum {
     USER_NOT_EXIST_ERROR("5004", "用户不存在"),
     PARAM_PASSWORD_ERROR("5005", "原密码输入错误"),
     ASSETS_NUM_ERROR("500","资产数量不足"),
-   REPAIR_ERROR("500","该资产正在维修中")
+    REPAIR_ERROR("500","该资产正在维修中")
     ;
 
     public String code;

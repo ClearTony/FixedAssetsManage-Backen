@@ -3,14 +3,24 @@ package com.example.controller;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.example.common.Result;
+import com.example.common.enums.ResultCodeEnum;
+import com.example.dto.AssetsDto;
 import com.example.entity.Assets;
 import com.example.service.AssetsService;
 import com.github.pagehelper.PageInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.annotation.Resource;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.util.List;
 
@@ -23,6 +33,7 @@ public class AssetsController {
 
     @Resource
     private AssetsService assetsService;
+    private static final Logger logger = LoggerFactory.getLogger(AssetsController.class);
 
     /**
      * 新增
@@ -74,7 +85,7 @@ public class AssetsController {
      */
     @GetMapping("/selectAll")
     public Result selectAll(Assets assets) {
-        List<Assets> list = assetsService.selectAll(assets);
+        List<AssetsDto> list = assetsService.selectAll(assets);
         return Result.success(list);
     }
 
@@ -85,7 +96,7 @@ public class AssetsController {
     public Result selectPage(Assets assets,
                              @RequestParam(defaultValue = "1") Integer pageNum,
                              @RequestParam(defaultValue = "10") Integer pageSize) {
-        PageInfo<Assets> page = assetsService.selectPage(assets, pageNum, pageSize);
+        PageInfo<AssetsDto> page = assetsService.selectPage(assets, pageNum, pageSize);
         return Result.success(page);
     }
 
@@ -96,7 +107,7 @@ public class AssetsController {
     public void exportData(HttpServletResponse response) throws IOException {
         ExcelWriter writer = ExcelUtil.getWriter(true);
 
-        List<Assets> list = assetsService.selectAll(null);
+        List<AssetsDto> list = assetsService.selectAll(null);
         writer.write(list, true);
 
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");
@@ -108,4 +119,36 @@ public class AssetsController {
         outputStream.close();
     }
 
+    /**
+     * 批量导出数据
+     */
+    @PostMapping("/import")
+    public Result importData(@RequestParam("file") MultipartFile file){
+        if (file.isEmpty()) {
+            logger.error("导入文件为空");
+            return Result.error(ResultCodeEnum.valueOf("导入文件不能为空"));
+        }
+        try {
+            return assetsService.importData(file);
+        } catch (Exception e) {
+            logger.error("文件导入失败", e);
+            return Result.error(ResultCodeEnum.valueOf("文件导入失败: " + e.getMessage()));
+        }
+    }
+
+    @GetMapping("/import/template")
+    public void template(HttpServletResponse response) throws IOException {
+        String templateFileName = "template.xlsx";
+        ClassPathResource resource = new ClassPathResource("importFile/" + templateFileName);
+        if (!resource.exists()) {
+            throw new RuntimeException("模板文件不存在");
+        }
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        String encodedFileName = URLEncoder.encode(templateFileName, "UTF-8").replaceAll("\\+", "%20");
+        response.setHeader("Content-Disposition", "attachment; filename=" + encodedFileName);
+        try (InputStream is = resource.getInputStream();
+             OutputStream os = response.getOutputStream()) {
+            FileCopyUtils.copy(is, os);
+        }
+    }
 }

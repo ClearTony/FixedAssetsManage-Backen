@@ -28,6 +28,9 @@
         from department
         where id = #{id}
     </select>
+    <select id="selectByName" resultType="java.lang.Integer">
+        select id from department where name = #{departmentName}
+    </select>
 
     <delete id="deleteById">
         delete from department
