@@ -1,9 +1,10 @@
 package com.example.dto;
 
 import com.alibaba.excel.annotation.ExcelProperty;
+import lombok.Data;
 
 import java.math.BigDecimal;
-
+@Data
 public class AssetsImportDto {
     /**
      * 资产名称
@@ -15,6 +16,9 @@ public class AssetsImportDto {
      */
     @ExcelProperty("资产分类")
     private String category;
+
+    @ExcelProperty("资产二级分类")
+    private String secondCategory;
     /**
      * 资产编号
      */
@@ -77,126 +81,4 @@ public class AssetsImportDto {
      */
     @ExcelProperty("备注")
     private String comment;
-
-
-    public String getStaffName() {
-        return staffName;
-    }
-
-    public void setStaffName(String staffName) {
-        this.staffName = staffName;
-    }
-
-    public String getDepartmentName() {
-        return departmentName;
-    }
-
-    public void setDepartmentName(String departmentName) {
-        this.departmentName = departmentName;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public String getNo() {
-        return no;
-    }
-
-    public void setNo(String no) {
-        this.no = no;
-    }
-
-    public String getModel() {
-        return model;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
-    }
-
-    public Integer getNum() {
-        return num;
-    }
-
-    public void setNum(Integer num) {
-        this.num = num;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public BigDecimal getMoney() {
-        return money;
-    }
-
-    public void setMoney(BigDecimal money) {
-        this.money = money;
-    }
-
-    public String getDepreciate() {
-        return depreciate;
-    }
-
-    public void setDepreciate(String depreciate) {
-        this.depreciate = depreciate;
-    }
-
-    public Integer getDepartmentId() {
-        return departmentId;
-    }
-
-    public void setDepartmentId(Integer departmentId) {
-        this.departmentId = departmentId;
-    }
-
-    public Integer getStaffId() {
-        return staffId;
-    }
-
-    public void setStaffId(Integer staffId) {
-        this.staffId = staffId;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
 }

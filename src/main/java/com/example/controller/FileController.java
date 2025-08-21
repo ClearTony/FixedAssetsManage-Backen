@@ -3,6 +3,7 @@ package com.example.controller;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.codec.Base64;
 import com.example.common.Result;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -47,12 +48,48 @@ public class FileController {
             // 文件存储形式：时间戳-文件名
             FileUtil.writeBytes(file.getBytes(), filePath + flag + "-" + fileName);  // ***/manager/files/1697438073596-avatar.png
             System.out.println(fileName + "--上传成功");
+            
+            // 将文件转换为Base64
+            byte[] fileBytes = file.getBytes();
+            String base64String = Base64.encode(fileBytes);
+            
+            // 根据文件扩展名确定MIME类型
+            String mimeType = getMimeType(fileName);
+            String base64Data = "data:" + mimeType + ";base64," + base64String;
+            
+            return Result.success(base64Data);
 
         } catch (Exception e) {
             System.err.println(fileName + "--文件上传失败");
+            return Result.error("500", "文件上传失败");
         }
-        String http = "http://" + ip + ":" + port + "/files/";
-        return Result.success(http + flag + "-" + fileName);  //  http://localhost:9090/files/1697438073596-avatar.png
+    }
+
+    /**
+     * 根据文件名获取MIME类型
+     */
+    private String getMimeType(String fileName) {
+        if (fileName == null) {
+            return "application/octet-stream";
+        }
+        String extension = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
+        switch (extension) {
+            case "jpg":
+            case "jpeg":
+                return "image/jpeg";
+            case "png":
+                return "image/png";
+            case "gif":
+                return "image/gif";
+            case "bmp":
+                return "image/bmp";
+            case "webp":
+                return "image/webp";
+            case "svg":
+                return "image/svg+xml";
+            default:
+                return "application/octet-stream";
+        }
     }
 
 

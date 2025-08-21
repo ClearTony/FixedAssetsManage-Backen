@@ -39,8 +39,8 @@ public class AssetsController {
      * 新增
      */
     @PostMapping("/add")
-    public Result add(@RequestBody Assets assets) {
-        assetsService.add(assets);
+    public Result add(@RequestBody AssetsDto assetsDto) {
+        assetsService.add(assetsDto);
         return Result.success();
     }
 
@@ -66,8 +66,8 @@ public class AssetsController {
      * 修改
      */
     @PutMapping("/update")
-    public Result updateById(@RequestBody Assets assets) {
-        assetsService.updateById(assets);
+    public Result updateById(@RequestBody AssetsDto assetsDto) {
+        assetsService.updateById(assetsDto);
         return Result.success();
     }
 

@@ -19,7 +19,7 @@
             <if test="pid != null"> and pid = #{pid}</if>
             <if test="level != null"> and level = #{level}</if>
         </where>
-        order by id desc
+        order by id asc
     </select>
 
     <select id="selectById" resultType="com.example.entity.Department">
@@ -29,7 +29,16 @@
         where id = #{id}
     </select>
     <select id="selectByName" resultType="java.lang.Integer">
-        select id from department where name = #{departmentName}
+        select id from department where name in
+        <foreach item="departmentName" collection="departmentNameList" separator="," open="(" close=")">
+            #{departmentName}
+        </foreach>
+    </select>
+    <select id="selectByIdList" resultType="java.lang.String">
+        select name from department where id in
+        <foreach item="id" collection="departmentId" separator="," open="(" close=")">
+            #{id}
+        </foreach>
     </select>
 
     <delete id="deleteById">

@@ -2,6 +2,7 @@ package com.example.service;
 
 import cn.hutool.core.date.DateUtil;
 import com.example.common.enums.RoleEnum;
+import com.example.dto.AssetsDto;
 import com.example.entity.Account;
 import com.example.entity.Assets;
 import com.example.entity.AssetsIn;
@@ -10,6 +11,8 @@ import com.example.utils.TokenUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import javax.annotation.Resource;
+
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -59,7 +62,9 @@ public class AssetsInService {
         if (RoleEnum.ADMIN.name().equals(currentUser.getRole()) && "通过".equals(assetsIn.getStatus())) {
             Assets assets = assetsService.selectById(assetsIn.getAssetsId());
             assets.setNum(assets.getNum() + assetsIn.getNum());
-            assetsService.updateById(assets);
+            AssetsDto assetsDto = new AssetsDto();
+            BeanUtils.copyProperties(assets, assetsDto);
+            assetsService.updateById(assetsDto);
         }
         assetsInMapper.updateById(assetsIn);
     }

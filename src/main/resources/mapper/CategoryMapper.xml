@@ -5,7 +5,7 @@
 <mapper namespace="com.example.mapper.CategoryMapper">
 
     <sql id="Base_Column_List">
-        id,name
+        id,name,durable_years,residual_rate,depreciation_method
     </sql>
 
     <select id="selectAll" resultType="com.example.entity.Category">
@@ -36,10 +36,16 @@
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">id,</if>
             <if test="name != null">name,</if>
+            <if test="durableYears != null">durable_years,</if>
+            <if test="residualRate != null">residual_rate,</if>
+            <if test="depreciationMethod != null">depreciation_method,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">#{id},</if>
             <if test="name != null">#{name},</if>
+            <if test="durableYears != null">#{durableYears},</if>
+            <if test="residualRate != null">#{residualRate},</if>
+            <if test="depreciationMethod != null">#{depreciationMethod},</if>
         </trim>
     </insert>
 
@@ -48,6 +54,15 @@
         <set>
             <if test="name != null">
                 name = #{name},
+            </if>
+            <if test="durableYears != null">
+                durable_years = #{durableYears},
+            </if>
+            <if test="residualRate != null">
+                residual_rate = #{residualRate},
+            </if>
+            <if test="depreciationMethod != null">
+                depreciation_method = #{depreciationMethod},
             </if>
         </set>
         where id = #{id}

@@ -33,6 +33,7 @@ public interface DepartmentMapper {
      */
     List<Department> selectAll(Department department);
 
-    Integer selectByName(String departmentName);
+    List<Integer> selectByName(List<String> departmentNameList);
 
+    List<String> selectByIdList(List<String> departmentId);
 }

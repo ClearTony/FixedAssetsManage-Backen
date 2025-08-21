@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.example.common.enums.ResultCodeEnum;
 import com.example.common.enums.RoleEnum;
+import com.example.dto.AssetsDto;
 import com.example.entity.Account;
 import com.example.entity.Assets;
 import com.example.entity.AssetsReceive;
@@ -15,6 +16,8 @@ import com.example.utils.TokenUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import javax.annotation.Resource;
+
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -72,7 +75,9 @@ public class AssetsReceiveService {
         if (RoleEnum.ADMIN.name().equals(currentUser.getRole()) && "通过".equals(assetsReceive.getStatus())) {
             Assets assets = assetsService.selectById(assetsReceive.getAssetsId());
             assets.setNum(assets.getNum() - 1);
-            assetsService.updateById(assets);
+            AssetsDto assetsDto = new AssetsDto();
+            BeanUtils.copyProperties(assets, assetsDto);
+            assetsService.updateById(assetsDto);
         }
 
         // 员工发起归还的时候   库存的数量+1
@@ -84,7 +89,9 @@ public class AssetsReceiveService {
             }
             Assets assets = assetsService.selectById(assetsReceive.getAssetsId());
             assets.setNum(assets.getNum() + 1);
-            assetsService.updateById(assets);
+            AssetsDto assetsDto = new AssetsDto();
+            BeanUtils.copyProperties(assets, assetsDto);
+            assetsService.updateById(assetsDto);
         }
         assetsReceiveMapper.updateById(assetsReceive);
     }

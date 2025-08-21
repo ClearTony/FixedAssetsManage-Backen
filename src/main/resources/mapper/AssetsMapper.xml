@@ -10,14 +10,13 @@
 
     <select id="selectAll" resultType="com.example.dto.AssetsDto">
          select
-         assets .*,department.name as departmentName, staff.name as staffName
-         from assets 
-         left join department on assets .department_id=department.id
-         left join staff on assets .staff_id=staff.id
+         assets .*
+         from assets
         <where>
             <if test="name != null"> and assets .name like concat('%', #{name}, '%')</if>
             <if test="category != null"> and assets .category like concat('%', #{category}, '%')</if>
             <if test="no != null"> and assets .no like concat('%', #{no}, '%')</if>
+            <if test="operator != null"> and assets .operator= #{operator}</if>
         </where>
         order by assets .id desc
     </select>
@@ -40,6 +39,7 @@
             <if test="id != null">id,</if>
             <if test="name != null">name,</if>
             <if test="category != null">category,</if>
+            <if test="secondCategory != null">second_category,</if>
             <if test="no != null">no,</if>
             <if test="img != null">img,</if>
             <if test="model != null">model,</if>
@@ -52,11 +52,13 @@
             <if test="location != null">location,</if>
             <if test="status != null">status,</if>
             <if test="comment != null">comment,</if>
+            <if test="operator != null">operator,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">#{id},</if>
             <if test="name != null">#{name},</if>
             <if test="category != null">#{category},</if>
+            <if test="secondCategory != null">#{secondCategory},</if>
             <if test="no != null">#{no},</if>
             <if test="img != null">#{img},</if>
             <if test="model != null">#{model},</if>
@@ -69,6 +71,7 @@
             <if test="location != null">#{location},</if>
             <if test="status != null">#{status},</if>
             <if test="comment != null">#{comment},</if>
+            <if test="operator != null">#{operator},</if>
         </trim>
     </insert>
 
@@ -80,6 +83,9 @@
             </if>
             <if test="category != null">
                 category = #{category},
+            </if>
+            <if test="secondCategory != null">
+                second_category = #{secondCategory},
             </if>
             <if test="no != null">
                 no = #{no},
@@ -107,6 +113,9 @@
             </if>
             <if test="staffId != null">
                 staff_id = #{staffId},
+            </if>
+            <if test="staffName != null">
+                staff_name = #{staffName},
             </if>
             <if test="location != null">
                 location = #{location},
