@@ -3,8 +3,8 @@ package com.example.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.common.config.InsertListMapper;
 import com.example.dto.AssetsDto;
+import com.example.dto.AssetsExportDto;
 import com.example.entity.Assets;
-import com.example.entity.Category;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -41,4 +41,6 @@ public interface AssetsMapper extends BaseMapper<Assets>,InsertListMapper<Assets
 
     @Select("select count(*) from assets where category = #{category}")
     int selectCountByCategory(String category);
+
+    List<AssetsExportDto> selectExportData(Assets assets);
 }

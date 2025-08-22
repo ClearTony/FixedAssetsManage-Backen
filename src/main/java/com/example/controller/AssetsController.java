@@ -1,10 +1,10 @@
 package com.example.controller;
 
-import cn.hutool.poi.excel.ExcelUtil;
-import cn.hutool.poi.excel.ExcelWriter;
+import com.alibaba.excel.EasyExcel;
 import com.example.common.Result;
 import com.example.common.enums.ResultCodeEnum;
 import com.example.dto.AssetsDto;
+import com.example.dto.AssetsExportDto;
 import com.example.entity.Assets;
 import com.example.service.AssetsService;
 import com.github.pagehelper.PageInfo;
@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
@@ -105,18 +106,19 @@ public class AssetsController {
      */
     @GetMapping("/export")
     public void exportData(HttpServletResponse response) throws IOException {
-        ExcelWriter writer = ExcelUtil.getWriter(true);
+        List<AssetsExportDto> list = assetsService.selectExportData();
 
-        List<AssetsDto> list = assetsService.selectAll(null);
-        writer.write(list, true);
+        // 设置响应头
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        String fileName = URLEncoder.encode("资产信息表", StandardCharsets.UTF_8.name()).replaceAll("\\+", "%20");
+        response.setHeader("Content-Disposition", "attachment;filename=" + fileName + ".xlsx");
 
-        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");
-        response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode("资产信息表", "UTF-8") + ".xlsx");
-        ServletOutputStream outputStream = response.getOutputStream();
-        writer.flush(outputStream, true);
-        outputStream.flush();
-        writer.close();
-        outputStream.close();
+        // 使用 EasyExcel 写入数据
+        try (ServletOutputStream outputStream = response.getOutputStream()) {
+            EasyExcel.write(outputStream, AssetsExportDto.class)
+                    .sheet("资产信息")
+                    .doWrite(list);
+        }
     }
 
     /**

@@ -27,6 +27,18 @@
         from assets 
         where id = #{id}
     </select>
+    <select id="selectExportData" resultType="com.example.dto.AssetsExportDto">
+        select
+        assets .*
+        from assets
+        <where>
+            <if test="name != null"> and assets .name like concat('%', #{name}, '%')</if>
+            <if test="category != null"> and assets .category like concat('%', #{category}, '%')</if>
+            <if test="no != null"> and assets .no like concat('%', #{no}, '%')</if>
+            <if test="operator != null"> and assets .operator= #{operator}</if>
+        </where>
+        order by assets .id desc
+    </select>
 
     <delete id="deleteById">
         delete from assets 

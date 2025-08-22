@@ -4,6 +4,7 @@ import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.read.listener.PageReadListener;
 import com.example.common.Result;
 import com.example.dto.AssetsDto;
+import com.example.dto.AssetsExportDto;
 import com.example.dto.AssetsImportDto;
 import com.example.entity.Account;
 import com.example.entity.Assets;
@@ -180,5 +181,22 @@ public class AssetsService {
 			log.error(e.getMessage());
 			return Result.error();
 		}
+	}
+
+	public List<AssetsExportDto> selectExportData() {
+		Account currentUser = TokenUtils.getCurrentUser();
+		Assets assets = new Assets();
+		assets.setOperator(currentUser.getId());
+		List<AssetsExportDto> list = assetsMapper.selectExportData(assets);
+		list.forEach(assetsDto -> {
+			if (assetsDto.getDepartmentId() != null) {
+				List<String> departmentId = Arrays.asList(assetsDto.getDepartmentId().split("/"));
+				if (!departmentId.isEmpty()) {
+					List<String> nameList =  departmentMapper.selectByIdList(departmentId);
+					assetsDto.setDepartmentName(String.join("/", nameList));
+				}
+			}
+		});
+		return list;
 	}
 }
